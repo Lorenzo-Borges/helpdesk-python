@@ -375,5 +375,29 @@ Integração com serviços AWS.
 Armazenamento de arquivos no Amazon S3.
 Gerenciamento de ambientes virtuais Python.
 
+Spring Boot
+
+FastAPI / Python
+
+@RestController            @app.get, @app.post
+
+@GetMapping                @app.get
+
+@PostMapping               @app.post
+
+DTO                        Pydantic Schema
+
+@Entity                    SQLAlchemy Model
+
+JpaRepository              SQLAlchemy Session / consultas
+
+@Service                   Classe ou módulo Service
+
+application.properties     .env + Pydantic Settings
+
+Hibernate                  SQLAlchemy
+
+Maven / Gradle             pip + requirements.txt
+
 Projeto desenvolvido para fins de estudo e prática de arquitetura Backend com Python e microsserviços.
 </code>
