@@ -375,9 +375,7 @@ Integração com serviços AWS.
 Armazenamento de arquivos no Amazon S3.
 Gerenciamento de ambientes virtuais Python.
 
-Spring Boot
-
-FastAPI / Python
+Spring Boot                FastAPI / Python
 
 @RestController            @app.get, @app.post
 
