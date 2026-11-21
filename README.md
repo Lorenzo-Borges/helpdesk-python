@@ -24,7 +24,7 @@ helpdesk/
 ├── report-service/
 │   └── API de geração de relatórios
 │
-└── docker-compose.yml
+└── README.md
 
 Fluxo da arquitetura
 text
@@ -52,12 +52,11 @@ FastAPI	Desenvolvimento das APIs
 PostgreSQL	Banco de dados
 SQLAlchemy	ORM
 Pydantic	Validação de dados
-Alembic	Migrações do banco
+Alembic	Migrações
 HTTPX	Comunicação entre APIs
 ReportLab	Geração de PDFs
 Boto3	Integração com Amazon S3
-Docker	Containerização
-Docker Compose	Orquestração local
+Uvicorn	Servidor das APIs
 4. Microsserviço 1 — Ticket Service
 
 Responsabilidade: gerenciamento de usuários e chamados.
@@ -90,7 +89,6 @@ ticket-service/
 │
 ├── migrations/
 ├── tests/
-├── Dockerfile
 ├── requirements.txt
 └── .env
 
@@ -178,7 +176,6 @@ report-service/
 │
 ├── migrations/
 ├── tests/
-├── Dockerfile
 ├── requirements.txt
 └── .env
 
@@ -234,49 +231,118 @@ helpdesk-reports/
 
 O acesso aos arquivos será realizado através de URLs pré-assinadas (Presigned URLs), evitando a necessidade de tornar o bucket público.
 
-8. Docker e execução
+8. Configuração do ambiente
 
-O projeto utilizará Docker Compose para executar os serviços e os bancos PostgreSQL.
+O projeto será executado diretamente no ambiente Python, sem Docker.
 
-Containers previstos
-Serviço	Porta
-ticket-service	8000
-report-service	8001
-postgres-tickets	5432
-postgres-reports	5433
+É necessário possuir:
 
-Para iniciar o ambiente:
+Python instalado.
+PostgreSQL instalado e em execução.
+Dois bancos de dados criados no PostgreSQL.
+Credenciais AWS configuradas para integração com S3.
+Criando os bancos de dados
+
+No PostgreSQL, execute:
+
+sql
+CREATE DATABASE tickets_db;
+CREATE DATABASE reports_db;
+
+Executando o Ticket Service
+
+Entre na pasta do serviço:
 
 bash
-docker compose up --build
+cd ticket-service
 
 
-Para encerrar:
+Crie um ambiente virtual:
 
 bash
-docker compose down
+python -m venv venv
 
-9. Documentação das APIs
 
-O FastAPI disponibiliza documentação automática através do Swagger.
+Ative o ambiente virtual.
 
-Após iniciar os serviços:
+Windows:
 
-Ticket Service: http://localhost:8000/docs
-Report Service: http://localhost:8001/docs
-10. Variáveis de ambiente
+bash
+venv\Scripts\activate
+
+
+Linux / macOS:
+
+bash
+source venv/bin/activate
+
+
+Instale as dependências:
+
+bash
+pip install -r requirements.txt
+
+
+Inicie a API:
+
+bash
+uvicorn app.main:app --reload --port 8000
+
+Executando o Report Service
+
+Abra outro terminal e entre na pasta do serviço:
+
+bash
+cd report-service
+
+
+Crie outro ambiente virtual:
+
+bash
+python -m venv venv
+
+
+Ative o ambiente virtual.
+
+Windows:
+
+bash
+venv\Scripts\activate
+
+
+Linux / macOS:
+
+bash
+source venv/bin/activate
+
+
+Instale as dependências:
+
+bash
+pip install -r requirements.txt
+
+
+Inicie a API:
+
+bash
+uvicorn app.main:app --reload --port 8001
+
+
+Importante: cada serviço deve ser executado em seu próprio terminal, com seu próprio ambiente virtual.
+
+9. Variáveis de ambiente
 
 Cada microsserviço terá seu próprio arquivo .env.
 
 Ticket Service
 env
-DATABASE_URL=postgresql://postgres:password@postgres-tickets:5432/tickets_db
+DATABASE_URL=postgresql://postgres:password@localhost:5432/tickets_db
 
 Report Service
 env
-DATABASE_URL=postgresql://postgres:password@postgres-reports:5432/reports_db
+DATABASE_URL=postgresql://postgres:password@localhost:5432/reports_db
 
-TICKET_API_URL=http://ticket-service:8000
+TICKET_API_URL=http://localhost:8000
 
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
@@ -286,6 +352,14 @@ S3_BUCKET_NAME=
 
 As credenciais AWS devem ser fornecidas de forma segura e nunca devem ser versionadas no Git.
 
+10. Documentação das APIs
+
+O FastAPI disponibiliza documentação automática através do Swagger.
+
+Após iniciar os serviços:
+
+Ticket Service: http://localhost:8000/docs
+Report Service: http://localhost:8001/docs
 11. Objetivos de aprendizado
 
 O desenvolvimento deste projeto busca aplicar os seguintes conceitos:
@@ -299,7 +373,7 @@ Comunicação HTTP entre microsserviços.
 Geração de documentos PDF.
 Integração com serviços AWS.
 Armazenamento de arquivos no Amazon S3.
-Containerização com Docker.
+Gerenciamento de ambientes virtuais Python.
 
 Projeto desenvolvido para fins de estudo e prática de arquitetura Backend com Python e microsserviços.
 </code>
