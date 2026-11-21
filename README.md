@@ -1,3 +1,4 @@
+<code>
 ticket-service/
 │
 ├── app/
@@ -28,3 +29,4 @@ ticket-service/
 ├── Dockerfile
 ├── requirements.txt
 └── .env
+</code>
